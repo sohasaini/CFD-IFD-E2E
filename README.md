@@ -161,17 +161,6 @@ If hosted on a server with `APP_HOST=0.0.0.0`, open from another machine:
 http://SERVER_PUBLIC_IP:5005
 ```
 
-Make sure the firewall or cloud security group allows inbound TCP traffic on port `5005`.
-
-## Production Hosting Note
-
-For production, prefer running Flask behind a reverse proxy such as Nginx or Apache:
-
-```text
-Browser -> Nginx/Apache -> Flask app on 127.0.0.1:5005
-```
-
-For simple internal testing, `APP_HOST=0.0.0.0` and an open port is enough.
 
 ## Active UI
 
@@ -180,17 +169,3 @@ The root route `/` opens the Agentic Dashboard:
 ```text
 http://127.0.0.1:5005/
 ```
-
-The alias route also works:
-
-```text
-http://127.0.0.1:5005/agentic-dashboard
-```
-
-## Notes
-
-- Do not commit `.env`; it contains machine-specific paths and credentials.
-- `AUTOMATION_PATH` is cross-platform. Use Windows paths on Windows and POSIX paths on Linux/macOS.
-- The app searches automation suites under `TestSuites` inside `AUTOMATION_PATH`.
-- Generated reports are stored under `reports/`.
-- Cached/indexed data is stored under `data/`.
