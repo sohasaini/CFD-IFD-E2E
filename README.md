@@ -7,16 +7,11 @@ Flask application for Agentic AI E2E validation. The app reads CFD data, finds r
 This application and the automation repository are separate folders.
 
 Recommended Windows layout:
-
-```text
-C:\E2E-AI
 C:\Automation
 ```
 
 Recommended Linux/macOS layout:
 
-```text
-/opt/e2e-ai
 /opt/automation
 ```
 
