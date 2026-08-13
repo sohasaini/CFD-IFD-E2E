@@ -1,0 +1,2516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agentic AI E2E Validation</title>
+
+<style>
+
+:root {
+    --page: #f4f8fd;
+    --page-2: #edf4fc;
+    --surface: rgba(255, 255, 255, 0.94);
+    --surface-soft: #f8fbff;
+    --surface-blue: #eef5ff;
+    --line: #dbe7f5;
+    --line-strong: #c5d8ee;
+    --text: #16243a;
+    --muted: #667a94;
+    --primary: #1769e0;
+    --primary-dark: #0d4fb7;
+    --primary-soft: #eaf3ff;
+    --cyan: #0aa9c2;
+    --success: #179c65;
+    --warning: #c78118;
+    --danger: #d84b62;
+    --shadow: 0 14px 36px rgba(33, 78, 128, 0.10);
+    --shadow-lg: 0 24px 60px rgba(33, 78, 128, 0.14);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--text);
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+    background:
+        radial-gradient(circle at 0% 0%, rgba(23, 105, 224, 0.10), transparent 30%),
+        radial-gradient(circle at 100% 0%, rgba(10, 169, 194, 0.08), transparent 28%),
+        linear-gradient(180deg, #f8fbff 0%, var(--page) 46%, var(--page-2) 100%);
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(rgba(23, 105, 224, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(23, 105, 224, 0.025) 1px, transparent 1px);
+    background-size: 46px 46px;
+    mask-image: linear-gradient(to bottom, black, transparent 85%);
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.page {
+    width: min(1450px, calc(100% - 30px));
+    margin: 0 auto;
+    padding: 18px 0 42px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Header */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 13px 17px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(18px);
+    box-shadow: var(--shadow);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-mark {
+    position: relative;
+    width: 43px;
+    height: 43px;
+    border-radius: 13px;
+    background:
+        linear-gradient(145deg, #26b8cd, #2777e7 52%, #1558c8);
+    box-shadow:
+        0 10px 24px rgba(23, 105, 224, 0.24),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+.brand-mark::before {
+    content: "AI";
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: white;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+}
+
+.brand-copy strong {
+    display: block;
+    color: var(--text);
+    font-size: 16px;
+}
+
+.brand-copy span {
+    display: block;
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.service-state {
+    display: none;
+}
+
+.outline-button {
+    min-height: 39px;
+    padding: 0 14px;
+    color: var(--primary);
+    border: 1px solid #bcd2ee;
+    border-radius: 11px;
+    background: #ffffff;
+    font-weight: 750;
+    transition: 0.18s ease;
+}
+
+.outline-button:hover {
+    border-color: var(--primary);
+    background: var(--primary-soft);
+}
+
+/* Intro */
+.intro {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 22px;
+    align-items: center;
+    margin-top: 14px;
+    padding: 24px 28px;
+    border: 1px solid var(--line);
+    border-radius: 23px;
+    background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(238, 246, 255, 0.96));
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    position: relative;
+}
+
+.intro::before {
+    content: "";
+    position: absolute;
+    right: -65px;
+    top: -105px;
+    width: 270px;
+    height: 270px;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle, rgba(23, 105, 224, 0.13), rgba(10, 169, 194, 0.05) 52%, transparent 70%);
+}
+
+.intro::after {
+    content: "";
+    position: absolute;
+    left: 26px;
+    bottom: 0;
+    width: 210px;
+    height: 3px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--primary), var(--cyan), transparent);
+}
+
+.intro-copy {
+    position: relative;
+    z-index: 2;
+}
+
+.intro-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--primary);
+    font-size: 11px;
+    font-weight: 850;
+    letter-spacing: 0.075em;
+    text-transform: uppercase;
+}
+
+.intro-kicker::before {
+    content: "";
+    width: 22px;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--primary), var(--cyan));
+}
+
+.intro h1 {
+    max-width: 920px;
+    margin: 9px 0 7px;
+    color: var(--text);
+    font-size: clamp(30px, 4vw, 45px);
+    line-height: 1.04;
+    letter-spacing: -0.044em;
+}
+
+.intro h1 span {
+    background: linear-gradient(90deg, #0d5dca, #177de4 52%, #0ba4bd);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.intro p {
+    max-width: 900px;
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+.intro-command {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    gap: 9px;
+    min-width: 230px;
+}
+
+.primary-button,
+.secondary-button {
+    min-height: 45px;
+    padding: 0 17px;
+    border: 0;
+    border-radius: 12px;
+    color: white;
+    font-weight: 800;
+    transition: 0.18s ease;
+}
+
+.primary-button {
+    background: linear-gradient(135deg, #2477e8, #125cc7);
+    box-shadow: 0 13px 27px rgba(23, 105, 224, 0.20);
+}
+
+.secondary-button {
+    background: linear-gradient(135deg, #13a7bc, #2477e8);
+    box-shadow: 0 13px 27px rgba(10, 169, 194, 0.16);
+}
+
+.primary-button:hover,
+.secondary-button:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.04);
+}
+
+.primary-button:disabled,
+.secondary-button:disabled {
+    opacity: 0.42;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Search panel */
+.search-panel {
+    margin-top: 14px;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 19px;
+    background: rgba(255, 255, 255, 0.93);
+    box-shadow: var(--shadow);
+}
+
+.search-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr 1fr 1fr auto;
+    gap: 10px;
+    align-items: end;
+}
+
+.field {
+    display: grid;
+    gap: 6px;
+}
+
+.field label {
+    color: #536a85;
+    font-size: 10px;
+    font-weight: 850;
+    letter-spacing: 0.065em;
+    text-transform: uppercase;
+}
+
+.control {
+    width: 100%;
+    height: 44px;
+    padding: 0 12px;
+    color: var(--text);
+    border: 1px solid #cbdced;
+    border-radius: 12px;
+    outline: none;
+    background: #ffffff;
+    transition: 0.18s ease;
+}
+
+.control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(23, 105, 224, 0.09);
+}
+
+select option {
+    color: var(--text);
+    background: white;
+}
+
+/* Workspace */
+.workspace {
+    display: grid;
+    grid-template-columns: minmax(330px, 0.72fr) minmax(650px, 1.28fr);
+    gap: 14px;
+    margin-top: 14px;
+    align-items: start;
+}
+
+.panel {
+    border: 1px solid var(--line);
+    border-radius: 21px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: var(--shadow);
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--line);
+    background:
+        linear-gradient(180deg, #ffffff, #f9fbfe);
+}
+
+.panel-header h2 {
+    margin: 0;
+    color: var(--text);
+    font-size: 17px;
+}
+
+.panel-header p {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.panel-body {
+    padding: 17px;
+}
+
+/* CFD */
+.cfd-card {
+    padding: 17px;
+    border: 1px solid #c9dcf2;
+    border-radius: 16px;
+    background:
+        linear-gradient(145deg, #f8fbff, #eef5ff);
+}
+
+.cfd-card.empty {
+    color: var(--muted);
+    text-align: center;
+    background: #fafcff;
+}
+
+.cfd-card:not(.empty),
+.insight.detail-trigger {
+    cursor: pointer;
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.cfd-card:not(.empty):hover,
+.insight.detail-trigger:hover {
+    transform: translateY(-1px);
+    border-color: #8db7e7;
+    box-shadow: 0 11px 24px rgba(23, 105, 224, 0.10);
+}
+
+.cfd-id {
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.045em;
+}
+
+.cfd-card h3 {
+    margin: 7px 0 11px;
+    color: var(--text);
+    font-size: 17px;
+    line-height: 1.4;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.tag {
+    padding: 5px 8px;
+    border: 1px solid #d5e4f4;
+    border-radius: 999px;
+    color: #365777;
+    background: #ffffff;
+    font-size: 10px;
+}
+
+.cfd-description {
+    margin: 12px 0 0;
+    color: #425b74;
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.detail-hint,
+.link-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 11px;
+    padding: 0;
+    color: var(--primary);
+    border: 0;
+    background: transparent;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+/* AI summary */
+.ai-summary {
+    display: grid;
+    gap: 9px;
+    margin-top: 10px;
+}
+
+.insight {
+    padding: 13px 14px;
+    border: 1px solid #d6e4f2;
+    border-radius: 14px;
+    background: #f9fbfe;
+}
+
+.insight span {
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 850;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.insight strong {
+    display: block;
+    margin-top: 5px;
+    color: var(--text);
+    font-size: 13px;
+}
+
+.insight p {
+    margin: 5px 0 0;
+    color: #4d637b;
+    font-size: 12px;
+    line-height: 1.48;
+}
+
+/* Agent activity */
+.agent-layout {
+    display: grid;
+    grid-template-columns: 205px minmax(0, 1fr);
+    gap: 14px;
+}
+
+.timeline {
+    position: relative;
+    padding: 4px 0;
+}
+
+.timeline::before {
+    content: "";
+    position: absolute;
+    top: 20px;
+    bottom: 20px;
+    left: 16px;
+    width: 2px;
+    border-radius: 999px;
+    background: #e1eaf4;
+}
+
+.timeline-step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    gap: 10px;
+    align-items: center;
+    min-height: 55px;
+    color: #8493a8;
+}
+
+.step-node {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid #cedceb;
+    border-radius: 50%;
+    background: #ffffff;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.timeline-step strong {
+    display: block;
+    font-size: 12px;
+}
+
+.timeline-step span {
+    display: block;
+    margin-top: 2px;
+    font-size: 10px;
+}
+
+.timeline-step.active {
+    color: var(--primary);
+}
+
+.timeline-step.active .step-node {
+    color: white;
+    border-color: var(--primary);
+    background: var(--primary);
+    box-shadow: 0 0 0 5px rgba(23, 105, 224, 0.10);
+}
+
+.timeline-step.done {
+    color: var(--success);
+}
+
+.timeline-step.done .step-node {
+    color: white;
+    border-color: var(--success);
+    background: var(--success);
+}
+
+.agent-main {
+    min-width: 0;
+}
+
+.agent-status {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 13px 14px;
+    border: 1px solid #d8e5f2;
+    border-radius: 14px;
+    background: #f8fbff;
+}
+
+.agent-status span {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 850;
+    letter-spacing: 0.065em;
+    text-transform: uppercase;
+}
+
+.agent-status strong {
+    display: block;
+    margin-top: 4px;
+    color: var(--text);
+    font-size: 15px;
+}
+
+.agent-pulse {
+    width: 40px;
+    height: 40px;
+    border-radius: 13px;
+    background:
+        radial-gradient(circle, rgba(255, 255, 255, 0.55), transparent 25%),
+        linear-gradient(145deg, #24b7cb, #2678e8, #165ec8);
+    box-shadow: 0 10px 22px rgba(23, 105, 224, 0.20);
+    animation: pulse 2.1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    50% {
+        transform: scale(1.05);
+        filter: brightness(1.08);
+    }
+}
+
+.progress-line {
+    margin-bottom: 11px;
+}
+
+.progress-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 7px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.progress-track {
+    height: 10px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e7eef7;
+}
+
+.progress-bar {
+    width: 0;
+    height: 100%;
+    border-radius: inherit;
+    background:
+        linear-gradient(90deg, #12aabe, #2477e8, #1559c4);
+    box-shadow: 0 5px 14px rgba(23, 105, 224, 0.18);
+    transition: width 0.45s ease;
+}
+
+/* Keep live logs dark for readability */
+.live-log {
+    height: 430px;
+    overflow-y: auto;
+    padding: 14px;
+    border: 1px solid #d5e0ec;
+    border-radius: 15px;
+    background:
+        linear-gradient(145deg, #0b1625, #102238);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+}
+
+.log-empty {
+    display: grid;
+    place-items: center;
+    min-height: 395px;
+    color: #92a5bb;
+    font-size: 13px;
+    text-align: center;
+}
+
+.log-row {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    gap: 11px;
+    align-items: start;
+    margin-bottom: 9px;
+    padding: 11px 12px;
+    border: 1px solid rgba(182, 205, 231, 0.10);
+    border-radius: 11px;
+    background: rgba(255, 255, 255, 0.035);
+}
+
+.log-icon {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    color: #9af0c6;
+    background: rgba(67, 214, 155, 0.10);
+    font-size: 14px;
+}
+
+.log-row.info .log-icon {
+    color: #b9d3ff;
+    background: rgba(90, 143, 229, 0.14);
+}
+
+.log-row.warning .log-icon {
+    color: #f4d69f;
+    background: rgba(242, 186, 98, 0.11);
+}
+
+.log-row.error .log-icon {
+    color: #ffb2bf;
+    background: rgba(244, 119, 139, 0.11);
+}
+
+.log-message {
+    color: #e6edf7;
+    font-family: "Cascadia Code", "IBM Plex Mono", Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.log-time {
+    color: #91a4ba;
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+/* Decision */
+.decision-panel {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: center;
+    margin-top: 11px;
+    padding: 15px;
+    border: 1px solid #bfe5d4;
+    border-radius: 15px;
+    background:
+        linear-gradient(135deg, #f4fcf8, #eef6ff);
+}
+
+.decision-panel span {
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 850;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.decision-panel strong {
+    display: block;
+    margin-top: 5px;
+    color: var(--text);
+    font-size: 16px;
+}
+
+.decision-panel p {
+    margin: 5px 0 0;
+    color: #4d637b;
+    font-size: 12px;
+    line-height: 1.48;
+}
+
+.decision-mark {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    color: white;
+    background: var(--success);
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.report-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    margin-top: 9px;
+}
+
+/* Modal */
+.hidden {
+    display: none !important;
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    padding: 22px;
+    background: rgba(18, 36, 60, 0.42);
+    backdrop-filter: blur(12px);
+}
+
+.modal-box {
+    width: min(1120px, 100%);
+    max-height: 90vh;
+    overflow: hidden;
+    border: 1px solid var(--line-strong);
+    border-radius: 21px;
+    background: #ffffff;
+    box-shadow: 0 28px 80px rgba(28, 70, 118, 0.24);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 17px 19px;
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(180deg, #ffffff, #f7fbff);
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: var(--text);
+    font-size: 17px;
+}
+
+.modal-header p {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.close-button {
+    width: 38px;
+    height: 38px;
+    color: #4f6680;
+    border: 1px solid #d7e3ef;
+    border-radius: 11px;
+    background: #ffffff;
+}
+
+.close-button:hover {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.modal-toolbar {
+    padding: 13px 19px;
+    border-bottom: 1px solid var(--line);
+}
+
+.table-wrap {
+    max-height: 57vh;
+    overflow: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 12px 14px;
+    color: var(--text);
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid #e4edf6;
+}
+
+th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    color: #526984;
+    background: #f3f8fd;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+tbody tr {
+    cursor: pointer;
+    transition: 0.15s ease;
+}
+
+tbody tr:hover,
+tbody tr.selected {
+    background: #eef5ff;
+}
+
+.radio {
+    accent-color: var(--primary);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 9px;
+    padding: 14px 19px;
+    border-top: 1px solid var(--line);
+    background: #fbfdff;
+}
+
+/* Detail modal */
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.detail-section {
+    padding: 16px;
+    border: 1px solid #dce7f2;
+    border-radius: 15px;
+    background: #f9fbfe;
+}
+
+.detail-section.wide {
+    grid-column: 1 / -1;
+}
+
+.detail-section h3 {
+    margin: 0 0 9px;
+    color: var(--text);
+    font-size: 14px;
+}
+
+.detail-section p {
+    margin: 0;
+    color: #425a73;
+    font-size: 13px;
+    line-height: 1.65;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.detail-list {
+    display: grid;
+    gap: 8px;
+}
+
+.detail-list-item {
+    padding: 10px 11px;
+    border: 1px solid #dce7f2;
+    border-radius: 11px;
+    background: #ffffff;
+}
+
+.detail-list-item strong {
+    display: block;
+    color: var(--text);
+    font-size: 12px;
+}
+
+.detail-list-item span {
+    display: block;
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.45;
+}
+
+/* How it works */
+.flow-modal-content {
+    padding: 22px;
+    max-height: 72vh;
+    overflow-y: auto;
+}
+
+.flow-modal-intro {
+    max-width: 760px;
+    margin-bottom: 20px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.flow-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.flow-card {
+    min-height: 155px;
+    padding: 17px;
+    border: 1px solid #d9e6f2;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #ffffff, #f4f8fd);
+    box-shadow: 0 9px 22px rgba(33, 78, 128, 0.07);
+}
+
+.flow-number {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 11px;
+    color: white;
+    background: linear-gradient(145deg, #2477e8, #0f5abf);
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.flow-card h3 {
+    margin: 12px 0 6px;
+    color: var(--text);
+    font-size: 14px;
+}
+
+.flow-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.toast {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    z-index: 200;
+    max-width: 420px;
+    padding: 13px 15px;
+    color: white;
+    border-radius: 12px;
+    background: #15375f;
+    box-shadow: var(--shadow-lg);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: 0.25s;
+    font-size: 12px;
+}
+
+.toast.show {
+    transform: none;
+    opacity: 1;
+}
+
+@media (max-width: 1100px) {
+    .intro,
+    .workspace {
+        grid-template-columns: 1fr;
+    }
+
+    .intro-command {
+        grid-template-columns: 1fr 1fr;
+        min-width: 0;
+    }
+
+    .search-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 760px) {
+    .page {
+        width: calc(100% - 16px);
+    }
+
+    .intro-command,
+    .search-grid,
+    .agent-layout,
+    .report-actions,
+    .flow-list,
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .timeline {
+        display: none;
+    }
+
+    .detail-section.wide {
+        grid-column: auto;
+    }
+}
+
+</style>
+</head>
+
+<body>
+<main class="page">
+
+<header class="header">
+    <div class="brand">
+        <div class="brand-mark"></div>
+        <div class="brand-copy">
+            <strong>Agentic AI E2E Validation</strong>
+            <span>Autonomous defect analysis, validation, and engineering decision</span>
+        </div>
+    </div>
+
+    <div class="header-actions">
+        <button id="howItWorksButton" class="outline-button" type="button">
+            How Agentic AI Works
+        </button>
+    </div>
+</header>
+
+<section class="intro">
+    <div class="intro-copy">
+        <span class="intro-kicker">Autonomous Quality Engineering</span>
+        <h1>
+            Analyze a customer defect and
+            <span>validate it end to end.</span>
+        </h1>
+        <p>
+            Agentic AI reads the CFD, predicts the root cause, maps the affected
+            feature, selects relevant automation, executes validation on the
+            best available target, compares evidence, and creates an engineering
+            decision report.
+        </p>
+    </div>
+
+    <div class="intro-command">
+        <button id="heroBrowseButton" class="primary-button" type="button">
+            Select a CFD
+        </button>
+        <button
+            id="heroStartButton"
+            class="secondary-button"
+            type="button"
+            disabled
+        >
+            Start E2E Validation
+        </button>
+    </div>
+</section>
+
+<section class="search-panel">
+    <div class="search-grid">
+        <div class="field">
+            <label for="product">Product</label>
+            <select id="product" class="control">
+                <option value="">Select product</option>
+            </select>
+        </div>
+
+        <div class="field">
+            <label for="component">Component</label>
+            <select id="component" class="control" disabled>
+                <option value="">Select product first</option>
+            </select>
+        </div>
+
+        <div class="field">
+            <label for="fromDate">From date</label>
+            <input id="fromDate" class="control" type="date">
+        </div>
+
+        <div class="field">
+            <label for="toDate">To date</label>
+            <input id="toDate" class="control" type="date">
+        </div>
+
+        <button id="browseButton" class="primary-button" type="button">
+            Browse CFDs
+        </button>
+    </div>
+</section>
+
+<section class="workspace">
+    <section class="panel">
+        <div class="panel-header">
+            <div>
+                <h2>Selected CFD</h2>
+                <p>Customer context and AI understanding</p>
+            </div>
+        </div>
+
+        <div class="panel-body">
+            <div id="selectedCfd" class="cfd-card empty" role="button" tabindex="0">
+                Select one CFD to begin.
+            </div>
+
+            <div id="aiSummary" class="ai-summary hidden">
+                <article class="insight detail-trigger" data-detail-section="feature" role="button" tabindex="0">
+                    <span>Affected feature</span>
+                    <strong id="featureTitle">-</strong>
+                    <p id="featureText">-</p>
+                </article>
+
+                <article class="insight detail-trigger" data-detail-section="root-cause" role="button" tabindex="0">
+                    <span>Predicted root cause</span>
+                    <strong id="rootTitle">-</strong>
+                    <p id="rootText">-</p>
+                </article>
+
+                <article class="insight detail-trigger" data-detail-section="validation" role="button" tabindex="0">
+                    <span>Related validation</span>
+                    <strong id="coverageTitle">-</strong>
+                    <p id="coverageText">-</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-header">
+            <div>
+                <h2>Live Agent Activity</h2>
+                <p>Meaningful AI and validation events in real time</p>
+            </div>
+            <span style="color:#c8d7f2;font-size:10px">IST · UTC+05:30</span>
+        </div>
+
+        <div class="panel-body">
+            <div class="agent-layout">
+                <aside class="timeline">
+                    <div class="timeline-step" data-stage="defect_analysis">
+                        <div class="step-node">1</div>
+                        <div><strong>Understand CFD</strong><span>RCA and feature</span></div>
+                    </div>
+                    <div class="timeline-step" data-stage="runner_trigger">
+                        <div class="step-node">2</div>
+                        <div><strong>Plan Validation</strong><span>Select coverage</span></div>
+                    </div>
+                    <div class="timeline-step" data-stage="execution_monitoring">
+                        <div class="step-node">3</div>
+                        <div><strong>Execute</strong><span>Run related tests</span></div>
+                    </div>
+                    <div class="timeline-step" data-stage="testcase_log_collection">
+                        <div class="step-node">4</div>
+                        <div><strong>Collect Evidence</strong><span>Logs and purpose</span></div>
+                    </div>
+                    <div class="timeline-step" data-stage="issue_classification">
+                        <div class="step-node">5</div>
+                        <div><strong>Compare</strong><span>Customer symptom</span></div>
+                    </div>
+                    <div class="timeline-step" data-stage="html_report_generation">
+                        <div class="step-node">6</div>
+                        <div><strong>Create Decision</strong><span>Report and action</span></div>
+                    </div>
+                    <div class="timeline-step" data-stage="completed">
+                        <div class="step-node">✓</div>
+                        <div><strong>Complete</strong><span>Ready to review</span></div>
+                    </div>
+                </aside>
+
+                <div class="agent-main">
+                    <div class="agent-status">
+                        <div>
+                            <span>Agent status</span>
+                            <strong id="agentStatus">Ready for a CFD</strong>
+                        </div>
+                        <div class="agent-pulse"></div>
+                    </div>
+
+                    <div class="progress-line">
+                        <div class="progress-meta">
+                            <span id="progressLabel">Ready</span>
+                            <strong id="progressValue">0%</strong>
+                        </div>
+                        <div class="progress-track">
+                            <div id="progressBar" class="progress-bar"></div>
+                        </div>
+                    </div>
+
+                    <div id="liveLog" class="live-log">
+                        <div class="log-empty">
+                            Select a CFD and start E2E validation.
+                        </div>
+                    </div>
+
+                    <div id="decisionPanel" class="decision-panel hidden">
+                        <div>
+                            <span>Engineering decision</span>
+                            <strong id="decisionTitle">-</strong>
+                            <p id="decisionText">-</p>
+                        </div>
+                        <div class="decision-mark">✓</div>
+                    </div>
+
+                    <div id="reportActions" class="report-actions hidden">
+                        <button id="viewReportButton" class="primary-button" type="button">
+                            Open Visual Report
+                        </button>
+                        <button id="downloadReportButton" class="outline-button" type="button">
+                            Download HTML Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
+
+</main>
+
+<!-- CFD selection modal -->
+<div id="cfdModal" class="modal hidden">
+    <div class="modal-box">
+        <div class="modal-header">
+            <div>
+                <h2>Select one customer-found defect</h2>
+                <p id="cfdModalSubtitle">Choose one CFD for end-to-end validation.</p>
+            </div>
+            <button id="closeCfdModalButton" class="close-button" type="button">✕</button>
+        </div>
+
+        <div class="modal-toolbar">
+            <input
+                id="cfdSearch"
+                class="control"
+                type="search"
+                placeholder="Search CFD ID, headline, status, description, or symptom"
+            >
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Select</th>
+                        <th>CFD ID</th>
+                        <th>Headline</th>
+                        <th>Status</th>
+                        <th>Submitted</th>
+                    </tr>
+                </thead>
+                <tbody id="cfdRows"></tbody>
+            </table>
+        </div>
+
+        <div class="modal-footer">
+            <button
+                id="confirmCfdButton"
+                class="primary-button"
+                type="button"
+                disabled
+            >
+                Use Selected CFD
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Agent flow modal -->
+<div id="flowModal" class="modal hidden">
+    <div class="modal-box">
+        <div class="modal-header">
+            <div>
+                <h2>What Agentic AI does</h2>
+                <p>The complete autonomous E2E validation flow</p>
+            </div>
+            <button id="closeFlowModalButton" class="close-button" type="button">✕</button>
+        </div>
+
+        <div class="flow-modal-content">
+            <p class="flow-modal-intro">
+                The agent completes the workflow without asking the user to
+                manually select a suite, target, or testcase. It makes those
+                decisions from the CFD and available automation coverage.
+            </p>
+
+            <div class="flow-list">
+                <article class="flow-card">
+                    <div class="flow-number">1</div>
+                    <h3>Read the CFD</h3>
+                    <p>Understands the headline, description, symptoms, conditions, status, and supporting evidence.</p>
+                </article>
+                <article class="flow-card">
+                    <div class="flow-number">2</div>
+                    <h3>Predict root cause</h3>
+                    <p>Identifies the likely failure area, affected feature, operation, and engineering context.</p>
+                </article>
+                <article class="flow-card">
+                    <div class="flow-number">3</div>
+                    <h3>Find validation coverage</h3>
+                    <p>Discovers related Regression collections and selects the best available coverage.</p>
+                </article>
+                <article class="flow-card">
+                    <div class="flow-number">4</div>
+                    <h3>Select execution target</h3>
+                    <p>Chooses an available platform and target automatically based on the validation requirement.</p>
+                </article>
+                <article class="flow-card">
+                    <div class="flow-number">5</div>
+                    <h3>Execute and collect evidence</h3>
+                    <p>Runs the related tests, captures testcase purpose, execution evidence, and detailed logs.</p>
+                </article>
+                <article class="flow-card">
+                    <div class="flow-number">6</div>
+                    <h3>Make an engineering decision</h3>
+                    <p>Classifies the issue as product, script, environment, or out of scope and creates the visual report.</p>
+                </article>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Full CFD and AI details modal -->
+<div id="detailsModal" class="modal hidden">
+    <div class="modal-box">
+        <div class="modal-header">
+            <div>
+                <h2 id="detailsModalTitle">CFD and AI details</h2>
+                <p id="detailsModalSubtitle">Complete evidence, RCA, feature, and validation mapping</p>
+            </div>
+            <button id="closeDetailsModalButton" class="close-button" type="button">✕</button>
+        </div>
+
+        <div id="detailsModalContent" class="flow-modal-content">
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const state = {
+    defects: [],
+    temporaryDefectId: "",
+    selectedDefect: null,
+    jobId: "",
+    reportViewUrl: "",
+    reportDownloadUrl: "",
+    shownLogCount: 0,
+    pollingTimer: null,
+    latestJob: null,
+};
+
+const get = id => document.getElementById(id);
+
+function escapeHtml(value) {
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function showToast(message) {
+    const toast = get("toast");
+    toast.textContent = message;
+    toast.classList.add("show");
+
+    window.setTimeout(() => {
+        toast.classList.remove("show");
+    }, 3000);
+}
+
+function setProgress(value, label) {
+    const safe = Math.max(
+        0,
+        Math.min(Number(value) || 0, 100)
+    );
+
+    get("progressBar").style.width = `${safe}%`;
+    get("progressValue").textContent = `${safe}%`;
+    get("progressLabel").textContent = label || "Working";
+}
+
+function formatIstTime(value) {
+    const date = value ? new Date(value) : new Date();
+
+    if (Number.isNaN(date.getTime())) {
+        return String(value || "");
+    }
+
+    return new Intl.DateTimeFormat(
+        "en-IN",
+        {
+            timeZone: "Asia/Kolkata",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true,
+        }
+    ).format(date);
+}
+
+function logIcon(level, message) {
+    const text = String(message || "").toLowerCase();
+
+    if (level === "error") return "!";
+    if (level === "warning") return "△";
+    if (text.includes("report")) return "▧";
+    if (text.includes("testcase") || text.includes("executing")) return "▶";
+    if (text.includes("collection") || text.includes("coverage")) return "◇";
+    if (text.includes("ai") || text.includes("root cause")) return "✦";
+    return "✓";
+}
+
+function appendLog(message, level = "success", time = "") {
+    const liveLog = get("liveLog");
+
+    if (liveLog.querySelector(".log-empty")) {
+        liveLog.innerHTML = "";
+    }
+
+    const row = document.createElement("div");
+    row.className = `log-row ${level}`;
+
+    row.innerHTML = `
+        <div class="log-icon">
+            ${escapeHtml(logIcon(level, message))}
+        </div>
+        <div class="log-message">
+            ${escapeHtml(message)}
+        </div>
+        <div class="log-time">
+            ${escapeHtml(formatIstTime(time))}
+        </div>
+    `;
+
+    liveLog.appendChild(row);
+    liveLog.scrollTop = liveLog.scrollHeight;
+}
+
+function fullText(value) {
+    const result = String(value ?? "").trim();
+    return result || "Not available";
+}
+
+function cleanText(value, maximum = 230) {
+    const lines = String(value ?? "")
+        .replace(/\r/g, "\n")
+        .split("\n")
+        .map(line => line.trim())
+        .filter(Boolean)
+        .filter(line => !(
+            /^(from the log|date:|time:|type:|source:|trace|thread|primary)/i
+                .test(line)
+        ))
+        .map(line => line
+            .replace(/Date\s*:[^|]+(\||$)/gi, "")
+            .replace(/Time\s*:[^|]+(\||$)/gi, "")
+            .replace(/Type\s*:[^|]+(\||$)/gi, "")
+            .replace(/Source\s*:[^|]+(\||$)/gi, "")
+            .replace(/TRACE\s*\|?/gi, "")
+            .replace(/Thread\s+[^\s|]+\s*\|?/gi, "")
+            .replace(/Primary\s*\|?/gi, "")
+            .replace(/^\s*\/\/\s*/, "")
+            .trim()
+        )
+        .filter(Boolean);
+
+    let result = lines[0] || "Not available";
+
+    if (result.length > maximum) {
+        result = `${result.slice(0, maximum - 1).trim()}…`;
+    }
+
+    return result;
+}
+
+async function loadProducts() {
+    const response = await fetch(
+        "/api/cfds/products"
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+        throw new Error(
+            data.message
+            || "Could not load products."
+        );
+    }
+
+    const productSelect = get("product");
+    productSelect.innerHTML = `
+        <option value="">
+            Select product
+        </option>
+    `;
+
+    for (const product of data.products || []) {
+        const option =
+            document.createElement("option");
+
+        option.value = product.name;
+        option.textContent = product.name;
+
+        productSelect.appendChild(option);
+    }
+}
+
+async function loadComponents(product) {
+    const componentSelect =
+        get("component");
+
+    componentSelect.disabled = true;
+    componentSelect.innerHTML = `
+        <option value="">
+            Loading components...
+        </option>
+    `;
+
+    if (!product) {
+        componentSelect.innerHTML = `
+            <option value="">
+                Select product first
+            </option>
+        `;
+        return;
+    }
+
+    const params = new URLSearchParams({
+        product,
+    });
+
+    const response = await fetch(
+        `/api/cfds/components?${params}`
+    );
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+        componentSelect.innerHTML = `
+            <option value="">
+                Could not load components
+            </option>
+        `;
+
+        throw new Error(
+            data.message
+            || "Could not load components."
+        );
+    }
+
+    componentSelect.innerHTML = `
+        <option value="">
+            Select component
+        </option>
+    `;
+
+    for (const component of data.components || []) {
+        const option =
+            document.createElement("option");
+
+        option.value = component.name;
+        option.textContent = component.name;
+
+        componentSelect.appendChild(option);
+    }
+
+    componentSelect.disabled = false;
+}
+
+function openModal(modal) {
+    modal.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+}
+
+function closeModal(modal) {
+    modal.classList.add("hidden");
+
+    if (
+        get("cfdModal").classList.contains("hidden")
+        && get("flowModal").classList.contains("hidden")
+        && get("detailsModal").classList.contains("hidden")
+    ) {
+        document.body.style.overflow = "";
+    }
+}
+
+function filtersValid() {
+    if (!get("product").value) {
+        showToast("Please select a product.");
+        return false;
+    }
+
+    if (!get("component").value) {
+        showToast("Please select a component.");
+        return false;
+    }
+
+    if (!get("fromDate").value || !get("toDate").value) {
+        showToast("Please select both dates.");
+        return false;
+    }
+
+    if (get("fromDate").value > get("toDate").value) {
+        showToast("From date cannot be after to date.");
+        return false;
+    }
+
+    return true;
+}
+
+async function browseCfds() {
+    if (!filtersValid()) return;
+
+    get("browseButton").disabled = true;
+    get("heroBrowseButton").disabled = true;
+
+    get("cfdRows").innerHTML = `
+        <tr>
+            <td colspan="5" style="padding:38px;text-align:center;color:#9ba9c1">
+                Loading customer-found defects...
+            </td>
+        </tr>
+    `;
+
+    openModal(get("cfdModal"));
+
+    try {
+        const params = new URLSearchParams({
+            product: get("product").value,
+            component: get("component").value,
+            from: get("fromDate").value,
+            to: get("toDate").value,
+            limit: "2000",
+        });
+
+        const response = await fetch(
+            `/api/cfds/search?${params}`
+        );
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.message || "Could not load CFDs."
+            );
+        }
+
+        state.defects = data.defects || [];
+        get("cfdModalSubtitle").textContent =
+            `${state.defects.length} CFDs found. Select one.`;
+
+        renderCfdRows(state.defects);
+
+    } catch (error) {
+        showToast(error.message);
+    } finally {
+        get("browseButton").disabled = false;
+        get("heroBrowseButton").disabled = false;
+    }
+}
+
+function filteredDefects() {
+    const query = get("cfdSearch")
+        .value
+        .trim()
+        .toLowerCase();
+
+    if (!query) return state.defects;
+
+    return state.defects.filter(defect => {
+        const text = [
+            defect.id,
+            defect.headline,
+            defect.description,
+            defect.symptoms,
+            defect.conditions,
+            defect.status,
+        ].join(" ").toLowerCase();
+
+        return text.includes(query);
+    });
+}
+
+function renderCfdRows(defects) {
+    if (!defects.length) {
+        get("cfdRows").innerHTML = `
+            <tr>
+                <td colspan="5" style="padding:38px;text-align:center;color:#9ba9c1">
+                    No matching CFDs found.
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    get("cfdRows").innerHTML = defects.map(defect => `
+        <tr
+            data-defect-id="${escapeHtml(defect.id)}"
+            class="${state.temporaryDefectId === defect.id ? "selected" : ""}"
+        >
+            <td>
+                <input
+                    class="radio"
+                    type="radio"
+                    ${state.temporaryDefectId === defect.id ? "checked" : ""}
+                >
+            </td>
+            <td><strong>${escapeHtml(defect.id)}</strong></td>
+            <td>${escapeHtml(defect.headline)}</td>
+            <td>${escapeHtml(defect.status)}</td>
+            <td>${escapeHtml(defect.submitted_on)}</td>
+        </tr>
+    `).join("");
+
+    get("cfdRows")
+        .querySelectorAll("tr[data-defect-id]")
+        .forEach(row => {
+            row.addEventListener("click", () => {
+                state.temporaryDefectId =
+                    row.dataset.defectId;
+
+                get("confirmCfdButton").disabled = false;
+                renderCfdRows(filteredDefects());
+            });
+        });
+}
+
+async function confirmSelectedCfd() {
+    if (!state.temporaryDefectId) return;
+
+    try {
+        const response = await fetch(
+            `/api/cfds/${encodeURIComponent(state.temporaryDefectId)}`
+        );
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.message || "Could not load CFD."
+            );
+        }
+
+        state.selectedDefect = data.defect;
+        state.jobId = "";
+        state.reportViewUrl = "";
+        state.reportDownloadUrl = "";
+
+        get("heroStartButton").disabled = false;
+        get("aiSummary").classList.add("hidden");
+        get("decisionPanel").classList.add("hidden");
+        get("reportActions").classList.add("hidden");
+
+        get("selectedCfd").classList.remove("empty");
+        get("selectedCfd").innerHTML = `
+            <div class="cfd-id">
+                ${escapeHtml(state.selectedDefect.id)}
+            </div>
+            <h3>
+                ${escapeHtml(
+                    state.selectedDefect.headline
+                    || state.selectedDefect.summary
+                    || "Untitled CFD"
+                )}
+            </h3>
+            <div class="tags">
+                <span class="tag">
+                    ${escapeHtml(state.selectedDefect.product || "anyconnect")}
+                </span>
+                <span class="tag">
+                    ${escapeHtml(state.selectedDefect.component)}
+                </span>
+                <span class="tag">
+                    ${escapeHtml(state.selectedDefect.status)}
+                </span>
+                <span class="tag">
+                    Severity ${escapeHtml(state.selectedDefect.severity || "N/A")}
+                </span>
+                <span class="tag">
+                    ${escapeHtml(state.selectedDefect.submitted_on || "")}
+                </span>
+            </div>
+            <p class="cfd-description">
+                ${escapeHtml(cleanText(state.selectedDefect.description))}
+            </p>
+            <span class="detail-hint">
+                View full CFD evidence →
+            </span>
+        `;
+
+        get("agentStatus").textContent =
+            "CFD selected — ready to start";
+
+        setProgress(0, "Ready");
+
+        get("liveLog").innerHTML = `
+            <div class="log-empty">
+                CFD selected. Start E2E validation when ready.
+            </div>
+        `;
+
+        updateTimeline("");
+
+        closeModal(get("cfdModal"));
+
+    } catch (error) {
+        showToast(error.message);
+    }
+}
+
+function updateTimeline(currentStage) {
+    const order = [
+        "defect_analysis",
+        "runner_trigger",
+        "execution_monitoring",
+        "testcase_log_collection",
+        "issue_classification",
+        "html_report_generation",
+        "completed",
+    ];
+
+    const currentIndex = order.indexOf(currentStage);
+
+    document.querySelectorAll(".timeline-step")
+        .forEach(step => {
+            const stepIndex = order.indexOf(
+                step.dataset.stage
+            );
+
+            step.classList.toggle(
+                "done",
+                currentStage === "completed"
+                || (
+                    currentIndex >= 0
+                    && currentIndex > stepIndex
+                )
+            );
+
+            step.classList.toggle(
+                "active",
+                currentStage !== "completed"
+                && currentIndex === stepIndex
+            );
+        });
+}
+
+function stageDisplayName(stage) {
+    const names = {
+        defect_analysis: "Understanding the CFD",
+        runner_trigger: "Planning related validation",
+        execution_monitoring: "Executing selected validation",
+        testcase_log_collection: "Collecting testcase evidence",
+        issue_classification: "Comparing customer symptom",
+        html_report_generation: "Creating engineering report",
+        completed: "Validation completed",
+    };
+
+    return names[stage] || "Agent working";
+}
+
+async function startValidation() {
+    if (!state.selectedDefect) {
+        showToast("Please select a CFD first.");
+        return;
+    }
+
+    if (state.pollingTimer) {
+        clearInterval(state.pollingTimer);
+    }
+
+    state.jobId = "";
+    state.shownLogCount = 0;
+
+    get("heroStartButton").disabled = true;
+    get("browseButton").disabled = true;
+    get("heroBrowseButton").disabled = true;
+
+    get("aiSummary").classList.add("hidden");
+    get("decisionPanel").classList.add("hidden");
+    get("reportActions").classList.add("hidden");
+    get("liveLog").innerHTML = "";
+
+    setProgress(3, "Starting E2E validation");
+    get("agentStatus").textContent =
+        "Starting autonomous validation";
+
+    appendLog(
+        `Starting Agentic AI E2E validation for ${state.selectedDefect.id}.`,
+        "info"
+    );
+
+    try {
+        const response = await fetch(
+            "/api/e2e/start",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    defect_id: state.selectedDefect.id,
+                }),
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.message || "Could not start E2E validation."
+            );
+        }
+
+        state.jobId = data.job?.job_id || "";
+
+        if (!state.jobId) {
+            throw new Error(
+                "The backend did not return a workflow ID."
+            );
+        }
+
+        updateFromJob(data.job || {});
+
+        state.pollingTimer = setInterval(
+            pollWorkflow,
+            3000
+        );
+
+    } catch (error) {
+        appendLog(error.message, "error");
+        setProgress(0, "Validation failed");
+        get("agentStatus").textContent =
+            "Validation failed";
+
+        get("heroStartButton").disabled = false;
+        get("browseButton").disabled = false;
+        get("heroBrowseButton").disabled = false;
+    }
+}
+
+async function pollWorkflow() {
+    try {
+        const response = await fetch(
+            `/api/e2e/status/${encodeURIComponent(state.jobId)}`
+        );
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.message || "Could not read workflow status."
+            );
+        }
+
+        updateFromJob(data.job || {});
+
+        if (
+            data.job?.workflow_status === "completed"
+            || data.job?.workflow_status === "failed"
+        ) {
+            clearInterval(state.pollingTimer);
+            state.pollingTimer = null;
+
+            get("heroStartButton").disabled = false;
+            get("browseButton").disabled = false;
+            get("heroBrowseButton").disabled = false;
+        }
+
+    } catch (error) {
+        clearInterval(state.pollingTimer);
+        state.pollingTimer = null;
+
+        appendLog(error.message, "error");
+
+        get("heroStartButton").disabled = false;
+        get("browseButton").disabled = false;
+        get("heroBrowseButton").disabled = false;
+    }
+}
+
+function updateFromJob(job) {
+    state.latestJob = job || {};
+    setProgress(
+        job.progress_percentage || 0,
+        job.progress_label || stageDisplayName(job.stage)
+    );
+
+    updateTimeline(job.stage);
+
+    get("agentStatus").textContent =
+        stageDisplayName(job.stage);
+
+    const logs = job.activity_logs || [];
+
+    for (
+        let index = state.shownLogCount;
+        index < logs.length;
+        index += 1
+    ) {
+        const entry = logs[index] || {};
+
+        appendLog(
+            entry.message || "",
+            entry.level || "success",
+            entry.time || ""
+        );
+    }
+
+    state.shownLogCount = logs.length;
+
+    if (
+        job.analysis
+        && Object.keys(job.analysis).length
+    ) {
+        const selectedCollection =
+            job.collection_selection?.selected_collection || {};
+
+        get("featureTitle").textContent =
+            job.analysis.feature || "Not determined";
+
+        get("featureText").textContent =
+            job.analysis.operation
+            || "The affected operation was identified.";
+
+        get("rootTitle").textContent =
+            job.analysis.product_area
+            || "Predicted cause";
+
+        get("rootText").textContent =
+            cleanText(
+                job.analysis.analysis_summary,
+                230
+            );
+
+        get("coverageTitle").textContent =
+            selectedCollection.collection_name
+            || job.execution_plan?.runner_suite_name
+            || "Not selected";
+
+        const matchingTests =
+            selectedCollection.matching_tests || [];
+
+        get("coverageText").textContent =
+            `${matchingTests.length} related Regression scenarios identified.`;
+
+        get("aiSummary").classList.remove("hidden");
+    }
+
+    if (
+        job.classification
+        && Object.keys(job.classification).length
+    ) {
+        get("decisionTitle").textContent =
+            job.classification.display_name
+            || job.classification.conclusion
+            || "Validation completed";
+
+        get("decisionText").textContent =
+            job.classification.executive_summary
+            || job.classification.final_reason
+            || "The AI evidence comparison is complete.";
+
+        get("decisionPanel").classList.remove("hidden");
+    }
+
+    if (
+        job.report
+        && Object.keys(job.report).length
+    ) {
+        state.reportViewUrl =
+            job.report.view_url || "";
+
+        state.reportDownloadUrl =
+            job.report.download_url || "";
+
+        if (
+            state.reportViewUrl
+            || state.reportDownloadUrl
+        ) {
+            get("reportActions").classList.remove("hidden");
+        }
+    }
+
+    if (
+        job.workflow_status === "failed"
+        && job.error
+    ) {
+        appendLog(job.error, "error");
+    }
+}
+
+
+function detailList(items) {
+    if (!Array.isArray(items) || !items.length) {
+        return `
+            <div class="detail-list-item">
+                <span>No additional matched collection was returned.</span>
+            </div>
+        `;
+    }
+
+    return items.map(item => {
+        const name = (
+            item.collection_name
+            || item.name
+            || "Validation collection"
+        );
+        const tests = (
+            item.matching_tests
+            || []
+        );
+        const score = (
+            item.maximum_score
+            ?? item.confidence
+            ?? ""
+        );
+
+        return `
+            <div class="detail-list-item">
+                <strong>${escapeHtml(name)}</strong>
+                <span>
+                    ${
+                        score !== ""
+                        ? `Relevance score: ${escapeHtml(score)}. `
+                        : ""
+                    }
+                    ${
+                        tests.length
+                        ? `${tests.length} related testcase(s): ${escapeHtml(tests.join(", "))}`
+                        : "Related Regression coverage."
+                    }
+                </span>
+            </div>
+        `;
+    }).join("");
+}
+
+function openDetails(section = "all") {
+    if (!state.selectedDefect) {
+        showToast("Please select a CFD first.");
+        return;
+    }
+
+    const defect = state.selectedDefect || {};
+    const raw = defect.raw_fields || {};
+    const job = state.latestJob || {};
+    const analysis = job.analysis || {};
+    const selection = job.collection_selection || {};
+    const candidates = selection.candidates || [];
+    const queue = job.collection_queue || [];
+
+    const validationItems = queue.length
+        ? queue
+        : candidates;
+
+    const content = `
+        <div class="detail-grid">
+            <article class="detail-section wide" data-section="cfd">
+                <h3>${escapeHtml(defect.id || "CFD")} · ${escapeHtml(defect.headline || defect.summary || "")}</h3>
+                <p>Project: ${escapeHtml(fullText(defect.project || "CSC.security"))}
+Product: ${escapeHtml(fullText(defect.product || "anyconnect"))}
+Component: ${escapeHtml(fullText(defect.component))}
+
+${escapeHtml(fullText(defect.description))}</p>
+            </article>
+
+            <article class="detail-section" data-section="symptoms">
+                <h3>Symptoms</h3>
+                <p>${escapeHtml(fullText(defect.symptoms))}</p>
+            </article>
+
+            <article class="detail-section" data-section="conditions">
+                <h3>Conditions</h3>
+                <p>${escapeHtml(fullText(defect.conditions))}</p>
+            </article>
+
+            <article class="detail-section" data-section="problem">
+                <h3>Further Problem Description</h3>
+                <p>${escapeHtml(fullText(defect.further_problem_description))}</p>
+            </article>
+
+            <article class="detail-section" data-section="workaround">
+                <h3>Workaround and Supporting Context</h3>
+                <p>${escapeHtml(fullText(defect.workarounds))}
+
+Platform: ${escapeHtml(fullText(raw.Platform))}
+Impact: ${escapeHtml(fullText(raw.Impact))}
+Justification: ${escapeHtml(fullText(raw.Justification))}</p>
+            </article>
+
+            <article class="detail-section" data-section="feature">
+                <h3>Affected Feature</h3>
+                <p>${escapeHtml(fullText(analysis.feature))}
+
+Operation: ${escapeHtml(fullText(analysis.operation))}
+Repository area: ${escapeHtml(fullText(analysis.repository_component))}</p>
+            </article>
+
+            <article class="detail-section" data-section="root-cause">
+                <h3>Predicted Root Cause</h3>
+                <p>${escapeHtml(fullText(analysis.analysis_summary))}</p>
+            </article>
+
+            <article class="detail-section wide" data-section="validation">
+                <h3>Related Validation Collections</h3>
+                <div class="detail-list">
+                    ${detailList(validationItems)}
+                </div>
+            </article>
+        </div>
+    `;
+
+    get("detailsModalContent").innerHTML = content;
+
+    if (section !== "all") {
+        const target = get("detailsModalContent")
+            .querySelector(`[data-section="${section}"]`);
+
+        if (target) {
+            target.style.borderColor = "rgba(108, 140, 255, 0.72)";
+            target.style.boxShadow = "0 0 0 4px rgba(108, 140, 255, 0.08)";
+            window.setTimeout(() => {
+                target.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                });
+            }, 80);
+        }
+    }
+
+    openModal(get("detailsModal"));
+}
+
+get("product").addEventListener(
+    "change",
+    async () => {
+        state.defects = [];
+        state.temporaryDefectId = "";
+        state.selectedDefect = null;
+
+        get("selectedCfd").className =
+            "cfd-card empty";
+        get("selectedCfd").textContent =
+            "Select one CFD to begin.";
+
+        get("heroStartButton").disabled = true;
+        get("aiSummary").classList.add("hidden");
+        get("decisionPanel").classList.add("hidden");
+        get("reportActions").classList.add("hidden");
+
+        try {
+            await loadComponents(
+                get("product").value
+            );
+        } catch (error) {
+            showToast(error.message);
+        }
+    }
+);
+
+get("browseButton").addEventListener(
+    "click",
+    browseCfds
+);
+
+get("heroBrowseButton").addEventListener(
+    "click",
+    browseCfds
+);
+
+get("heroStartButton").addEventListener(
+    "click",
+    startValidation
+);
+
+get("confirmCfdButton").addEventListener(
+    "click",
+    confirmSelectedCfd
+);
+
+get("closeCfdModalButton").addEventListener(
+    "click",
+    () => closeModal(get("cfdModal"))
+);
+
+get("howItWorksButton").addEventListener(
+    "click",
+    () => openModal(get("flowModal"))
+);
+
+get("selectedCfd").addEventListener(
+    "click",
+    () => {
+        if (!get("selectedCfd").classList.contains("empty")) {
+            openDetails("all");
+        }
+    }
+);
+
+get("selectedCfd").addEventListener(
+    "keydown",
+    event => {
+        if (
+            (event.key === "Enter" || event.key === " ")
+            && !get("selectedCfd").classList.contains("empty")
+        ) {
+            event.preventDefault();
+            openDetails("all");
+        }
+    }
+);
+
+document.querySelectorAll(".detail-trigger")
+    .forEach(card => {
+        card.addEventListener(
+            "click",
+            () => openDetails(
+                card.dataset.detailSection || "all"
+            )
+        );
+
+        card.addEventListener(
+            "keydown",
+            event => {
+                if (
+                    event.key === "Enter"
+                    || event.key === " "
+                ) {
+                    event.preventDefault();
+                    openDetails(
+                        card.dataset.detailSection || "all"
+                    );
+                }
+            }
+        );
+    });
+
+get("closeFlowModalButton").addEventListener(
+    "click",
+    () => closeModal(get("flowModal"))
+);
+
+get("closeDetailsModalButton").addEventListener(
+    "click",
+    () => closeModal(get("detailsModal"))
+);
+
+get("cfdSearch").addEventListener(
+    "input",
+    () => renderCfdRows(filteredDefects())
+);
+
+get("viewReportButton").addEventListener(
+    "click",
+    () => {
+        if (!state.reportViewUrl) {
+            showToast("The report is not ready.");
+            return;
+        }
+
+        window.open(
+            state.reportViewUrl,
+            "_blank"
+        );
+    }
+);
+
+get("downloadReportButton").addEventListener(
+    "click",
+    () => {
+        if (!state.reportDownloadUrl) {
+            showToast("The report is not ready.");
+            return;
+        }
+
+        window.location.href =
+            state.reportDownloadUrl;
+    }
+);
+
+get("cfdModal").addEventListener(
+    "click",
+    event => {
+        if (event.target === get("cfdModal")) {
+            closeModal(get("cfdModal"));
+        }
+    }
+);
+
+get("flowModal").addEventListener(
+    "click",
+    event => {
+        if (event.target === get("flowModal")) {
+            closeModal(get("flowModal"));
+        }
+    }
+);
+
+get("detailsModal").addEventListener(
+    "click",
+    event => {
+        if (event.target === get("detailsModal")) {
+            closeModal(get("detailsModal"));
+        }
+    }
+);
+
+document.addEventListener(
+    "keydown",
+    event => {
+        if (event.key !== "Escape") return;
+
+        if (!get("detailsModal").classList.contains("hidden")) {
+            closeModal(get("detailsModal"));
+            return;
+        }
+
+        if (!get("flowModal").classList.contains("hidden")) {
+            closeModal(get("flowModal"));
+            return;
+        }
+
+        if (!get("cfdModal").classList.contains("hidden")) {
+            closeModal(get("cfdModal"));
+        }
+    }
+);
+
+loadProducts()
+    .catch(error => showToast(error.message));
+</script>
+</body>
+</html>
